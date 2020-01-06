@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include "shiki-time-tools.h"
+#include "shiki-tcp-ip-tools.h"
 
 static void stim_get_wday_id(char *_day_str, int8_t _wday){
     if (_wday == 0){
@@ -148,6 +150,53 @@ static void stim_get_month_eng(char *_month_str, int8_t _month){
     else{
         strcpy(_month_str, "wrong");
     }
+}
+
+static int8_t stim_convert_strmonth_to_int(char *_strmon){
+    char strmon_tmp[4];
+    strncpy(strmon_tmp, _strmon, 3);
+    for (int8_t i=0; i<3; i++){
+        if (strmon_tmp[i] >= 'A' && strmon_tmp[i] <= 'Z'){
+            strmon_tmp[i] = strmon_tmp[i] - 'A' + 'a';
+        }
+    }
+    if(strcmp(strmon_tmp, "jan") == 0){
+        return 0;
+    }
+    else if(strcmp(strmon_tmp, "feb") == 0){
+        return 1;
+    }
+    else if(strcmp(strmon_tmp, "mar") == 0){
+        return 2;
+    }
+    else if(strcmp(strmon_tmp, "apr") == 0){
+        return 3;
+    }
+    else if(strcmp(strmon_tmp, "may") == 0){
+        return 4;
+    }
+    else if(strcmp(strmon_tmp, "jun") == 0){
+        return 5;
+    }
+    else if(strcmp(strmon_tmp, "jul") == 0){
+        return 6;
+    }
+    else if(strcmp(strmon_tmp, "aug") == 0){
+        return 7;
+    }
+    else if(strcmp(strmon_tmp, "sep") == 0){
+        return 8;
+    }
+    else if(strcmp(strmon_tmp, "oct") == 0){
+        return 9;
+    }
+    else if(strcmp(strmon_tmp, "nov") == 0){
+        return 10;
+    }
+    else if(strcmp(strmon_tmp, "dec") == 0){
+        return 11;
+    }
+    return -1;
 }
 
 void stim_get_date_custom_auto(char *tim_str, custom_date_format _format){
@@ -1182,4 +1231,103 @@ void stim_get_timestamp_from_wuku(long *_time_1, long *_time_2, uint16_t _year_i
     }
     *_time_1 = time_now + (time_elapsed * 24 * 3600);
     *_time_2 = time_now + ((time_elapsed + 210) * 24 * 3600);
+}
+
+long stim_get_net_time(char *_host, uint16_t _port){
+    stcp_setup(STCP_SET_DEBUG_MODE, STCP_DEBUG_OFF);
+    stcp_setup(STCP_SET_INFINITE_MODE_RETRY, WITHOUT_RETRY);
+    stcp_setup(STCP_SET_TIMEOUT, 2);
+    char *header_web = stcp_http_get(_host, _port, "", NULL, NULL, STCP_REQ_HEADER_ONLY);
+    char buff_info[7];
+    char buff_data[32];
+    for (int16_t i=0; i<(strlen(header_web) - strlen("Date: ")); i++){
+        memset(buff_info, 0x00, 7*sizeof(char));
+        for (int8_t j=0; j<strlen("Date: "); j++){
+            buff_info[j] = header_web[i + j];
+        }
+        if (strcmp(buff_info, "Date: ") == 0){
+            i = i + strlen("Date: ");
+            memset(buff_data, 0x00, 30*sizeof(char));
+            for (int8_t j=0; j<30; j++){
+                buff_data[j] = header_web[i + j];
+            }
+            i = strlen(header_web) - strlen("Date: ");
+        }
+    }
+    if (strlen(buff_data) == 30){
+        char time_converter[5];
+        long net_time = 0;
+        struct tm *net_tm = localtime(&net_time);
+        
+        time_converter[0] = buff_data[5];
+        time_converter[1] = buff_data[6];
+        time_converter[2] = 0x00;
+        net_tm->tm_mday = atoi(time_converter);
+
+        time_converter[0] = buff_data[8];
+        time_converter[1] = buff_data[9];
+        time_converter[2] = buff_data[10];
+        time_converter[3] = 0x00;
+        net_tm->tm_mon = stim_convert_strmonth_to_int(time_converter);
+        if (net_tm->tm_mon < 0){
+            free(header_web);
+            return -1;
+        }
+
+        time_converter[0] = buff_data[12];
+        time_converter[1] = buff_data[13];
+        time_converter[2] = buff_data[14];
+        time_converter[3] = buff_data[15];
+        time_converter[4] = 0x00;
+
+        net_tm->tm_year = atoi(time_converter) - 1900;
+
+        time_converter[0] = buff_data[17];
+        time_converter[1] = buff_data[18];
+        time_converter[2] = 0x00;
+        net_tm->tm_hour = atoi(time_converter);
+
+        time_converter[0] = buff_data[20];
+        time_converter[1] = buff_data[21];
+        time_converter[2] = 0x00;
+        net_tm->tm_min = atoi(time_converter);
+
+        time_converter[0] = buff_data[23];
+        time_converter[1] = buff_data[24];
+        time_converter[2] = 0x00;
+        net_tm->tm_sec = atoi(time_converter);
+
+        net_time = mktime(net_tm);
+        free(header_web);
+        return net_time;
+    }
+    free(header_web);
+    return -1;
+}
+
+int8_t stim_set_time_manual(long _time_set, int8_t _timezone_in_hour){
+    struct timeval time_setup_value;
+    time_setup_value.tv_sec = _time_set + _timezone_in_hour * 3600;
+    time_setup_value.tv_usec = 0;
+
+    if (settimeofday(&time_setup_value, NULL) < 0){
+        printf("failed to set time\n");
+        return -1;
+    }
+    else {
+        printf("set time success\n");
+    }
+    return 0;
+}
+
+int8_t stim_set_time_from_inet(char *_host, int16_t _port, int8_t _timezone_in_hour){
+    long time_set = stim_get_net_time(_host, _port);
+    if (time_set > 0){
+        stim_set_time_manual(time_set, _timezone_in_hour);
+    }
+    else {
+        printf("failed to get time from : %s:%i\n", _host, _port);
+        return -1;
+    }
+    return 0;
 }

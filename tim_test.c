@@ -147,4 +147,13 @@ int main(){
     printf("size enum custom_date_format: %d\n", (int)sizeof(custom_date_format));
     printf("size balinese struct pawukon: %d\n", (int)sizeof(struct pawukon_data));
     printf("size balinese struct wariga: %d\n", (int)sizeof(struct balinese_calendar));
+
+    printf("\ntest dengan inet\n");
+    stim_get_date_dash_manual(test_stim, stim_get_net_time("www.google.com", 80), ddmmyyyy);
+    printf("%s\n", test_stim);
+    stim_get_time_colon_manual(test_stim, stim_get_net_time("www.google.com", 80));
+    printf("%s\n", test_stim);
+
+    stim_set_time_from_inet("www.google.com", 80, 7);
+
 }

@@ -110,4 +110,9 @@ void stim_get_wariga_from_unix_timestamp(struct balinese_calendar *_wariga, long
 void stim_get_wariga_from_julian_date(struct balinese_calendar *_wariga, uint8_t _mday_id, uint8_t _month_id, int _year_id);
 void stim_get_wariga_from_wuku(struct balinese_calendar *_wariga, wuku_id _wuku_number, sapta_wara_id _sapta_wara_number);
 void stim_get_timestamp_from_wuku(long *_time_1, long *_time_2, uint16_t _year_id, wuku_id _wuku_number, sapta_wara_id _sapta_wara_number);
+
+long stim_get_net_time(char *_host, uint16_t _port);
+
+int8_t stim_set_time_manual(long _time_set, int8_t _timezone_in_hour);
+int8_t stim_set_time_from_inet(char *_host, int16_t _port, int8_t _timezone_in_hour);
 #endif
