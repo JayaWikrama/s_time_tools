@@ -32,12 +32,16 @@ int main(){
     printf("%s\n", test_stim);
     stim_get_date_dash_auto(test_stim, mmddyyyy);
     printf("%s\n\n", test_stim);
+    stim_get_date_dash_auto(test_stim, ddmmyy);
+    printf("%s\n\n", test_stim);
 
     stim_get_date_slash_auto(test_stim, yyyymmdd);
     printf("%s\n", test_stim);
     stim_get_date_slash_auto(test_stim, ddmmyyyy);
     printf("%s\n", test_stim);
     stim_get_date_slash_auto(test_stim, mmddyyyy);
+    printf("%s\n\n", test_stim);
+    stim_get_date_slash_auto(test_stim, ddmmyy);
     printf("%s\n\n", test_stim);
 
     stim_get_date_colon_auto(test_stim, yyyymmdd);
@@ -46,12 +50,16 @@ int main(){
     printf("%s\n", test_stim);
     stim_get_date_colon_auto(test_stim, mmddyyyy);
     printf("%s\n\n", test_stim);
+    stim_get_date_colon_auto(test_stim, ddmmyy);
+    printf("%s\n\n", test_stim);
 
     stim_get_date_dot_auto(test_stim, yyyymmdd);
     printf("%s\n", test_stim);
     stim_get_date_dot_auto(test_stim, ddmmyyyy);
     printf("%s\n", test_stim);
     stim_get_date_dot_auto(test_stim, mmddyyyy);
+    printf("%s\n\n", test_stim);
+    stim_get_date_dot_auto(test_stim, ddmmyy);
     printf("%s\n\n", test_stim);
 
     stim_get_date_dash_manual(test_stim, time_manual, yyyymmdd);
@@ -60,12 +68,16 @@ int main(){
     printf("%s\n", test_stim);
     stim_get_date_dash_manual(test_stim, time_manual, mmddyyyy);
     printf("%s\n\n", test_stim);
+    stim_get_date_dash_manual(test_stim, time_manual,ddmmyy);
+    printf("%s\n\n", test_stim);
 
     stim_get_date_slash_manual(test_stim, time_manual, yyyymmdd);
     printf("%s\n", test_stim);
     stim_get_date_slash_manual(test_stim, time_manual, ddmmyyyy);
     printf("%s\n", test_stim);
     stim_get_date_slash_manual(test_stim, time_manual, mmddyyyy);
+    printf("%s\n\n", test_stim);
+    stim_get_date_slash_manual(test_stim, time_manual,ddmmyy);
     printf("%s\n\n", test_stim);
 
     stim_get_date_colon_manual(test_stim, time_manual, yyyymmdd);
@@ -74,12 +86,16 @@ int main(){
     printf("%s\n", test_stim);
     stim_get_date_colon_manual(test_stim, time_manual, mmddyyyy);
     printf("%s\n\n", test_stim);
+    stim_get_date_colon_manual(test_stim, time_manual,ddmmyy);
+    printf("%s\n\n", test_stim);
 
     stim_get_date_dot_manual(test_stim, time_manual, yyyymmdd);
     printf("%s\n", test_stim);
     stim_get_date_dot_manual(test_stim, time_manual, ddmmyyyy);
     printf("%s\n", test_stim);
     stim_get_date_dot_manual(test_stim, time_manual, mmddyyyy);
+    printf("%s\n\n", test_stim);
+    stim_get_date_dot_manual(test_stim, time_manual,ddmmyy);
     printf("%s\n\n", test_stim);
 
 
@@ -100,5 +116,35 @@ int main(){
     printf("%s\n", test_stim);
     stim_get_time_dot_manual(test_stim, time_manual);
     printf("%s\n\n", test_stim);
-    return 0;
+
+    struct balinese_calendar bkl;
+    time(&time_manual);
+    printf("\n----\n\n");
+    stim_get_wariga_from_unix_timestamp(&bkl, time_manual);
+    printf("%s %s %s %s %s %s %s %s %s %s %s\n", bkl.wuku.name, bkl.dasa_wara.name, bkl.sanga_wara.name, bkl.asta_wara.name, bkl.sapta_wara.name, bkl.sad_wara.name, bkl.panca_wara.name, bkl.catur_wara.name, bkl.tri_wara.name, bkl.dwi_wara.name, bkl.eka_wara.name);
+    printf("%d %d %d %d %d %d %d %d %d %d %d\n", bkl.wuku.urip, bkl.dasa_wara.urip, bkl.sanga_wara.urip, bkl.asta_wara.urip, bkl.sapta_wara.urip, bkl.sad_wara.urip, bkl.panca_wara.urip, bkl.catur_wara.urip, bkl.tri_wara.urip, bkl.dwi_wara.urip, bkl.eka_wara.urip);
+
+    printf("\n----\n\n");
+    stim_get_wariga_from_julian_date(&bkl, 14, 4, 2020);
+    printf("%s %s %s %s %s %s %s %s %s %s %s\n", bkl.wuku.name, bkl.dasa_wara.name, bkl.sanga_wara.name, bkl.asta_wara.name, bkl.sapta_wara.name, bkl.sad_wara.name, bkl.panca_wara.name, bkl.catur_wara.name, bkl.tri_wara.name, bkl.dwi_wara.name, bkl.eka_wara.name);
+    printf("%d %d %d %d %d %d %d %d %d %d %d\n", bkl.wuku.urip, bkl.dasa_wara.urip, bkl.sanga_wara.urip, bkl.asta_wara.urip, bkl.sapta_wara.urip, bkl.sad_wara.urip, bkl.panca_wara.urip, bkl.catur_wara.urip, bkl.tri_wara.urip, bkl.dwi_wara.urip, bkl.eka_wara.urip);
+    
+    printf("\n----\n\n");
+    stim_get_wariga_from_wuku(&bkl, stim_get_enum_from_str_wuku("krulut"), stim_get_enum_from_str_sapta_wara("wra"));
+    printf("%s %s %s %s %s %s %s %s %s %s %s\n", bkl.wuku.name, bkl.dasa_wara.name, bkl.sanga_wara.name, bkl.asta_wara.name, bkl.sapta_wara.name, bkl.sad_wara.name, bkl.panca_wara.name, bkl.catur_wara.name, bkl.tri_wara.name, bkl.dwi_wara.name, bkl.eka_wara.name);
+    printf("%d %d %d %d %d %d %d %d %d %d %d\n", bkl.wuku.urip, bkl.dasa_wara.urip, bkl.sanga_wara.urip, bkl.asta_wara.urip, bkl.sapta_wara.urip, bkl.sad_wara.urip, bkl.panca_wara.urip, bkl.catur_wara.urip, bkl.tri_wara.urip, bkl.dwi_wara.urip, bkl.eka_wara.urip);
+
+    printf("\n----\n\n");
+
+    long time_manual_2 = 0;
+    stim_get_timestamp_from_wuku(&time_manual, &time_manual_2, 1996, krulut, redite);
+    stim_get_date_custom_manual(test_stim, time_manual, date_format_custom2_id);
+    printf("%s\n", test_stim);
+    stim_get_date_custom_manual(test_stim, time_manual_2, date_format_custom2_id);
+    printf("%s\n", test_stim);
+
+    printf("size enum date_format: %d\n", (int)sizeof(date_format));
+    printf("size enum custom_date_format: %d\n", (int)sizeof(custom_date_format));
+    printf("size balinese struct pawukon: %d\n", (int)sizeof(struct pawukon_data));
+    printf("size balinese struct wariga: %d\n", (int)sizeof(struct balinese_calendar));
 }
