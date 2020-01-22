@@ -12,7 +12,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include "shiki-time-tools.h"
-#include "shiki-tcp-ip-tools.h"
+#include "../shiki-tcp-ip-tools/shiki-tcp-ip-tools.h"
 
 static void stim_get_wday_id(char *_day_str, int8_t _wday){
     if (_wday == 0){
